@@ -11,17 +11,41 @@ using NUnit.Framework;
 namespace Autocomplete.Test
 {
 	[TestFixture]
-	public class ValidationTest
+	public class AutoCompleteSpecTests
 	{
 		[Test]
-		public async Task InvalidCharactersInSet_OnlyCitiesWithValidCharactersReturned()
+		public async Task GivenBang_ResultsShouldMatchExpectations()
+		{
+			var mockDataReadModel = Substitute.For<IDataReadModel>();
+
+			mockDataReadModel.GetData().Returns(new List<string>
+			{
+				"BANDUNG", "BANGUI", "BANGKOK", "BANGALORE"
+			});
+
+			var citySearch = new CitySearch(mockDataReadModel, new CityCharacterValidator(), new Trie());
+			await citySearch.Initialise();
+
+			var expectedResult = new CityResult
+			{
+				NextCities = new[] {"BANGUI", "BANGKOK", "BANGALORE"},
+				NextLetters = new[] { "U", "K", "A"}
+			};
+
+			var results = citySearch.Search("BANG");
+
+			results.ShouldBeEquivalentTo(expectedResult);
+		}
+
+		[Test]
+		public async Task GivenLA_ResultsShouldMatchExpectations()
 		{
 			//Given
 			var mockDataReadModel = Substitute.For<IDataReadModel>();
 
 			mockDataReadModel.GetData().Returns(new List<string>
 			{
-				"Valid", "In%Valid", "In3Valid", "Val*id"
+				"LA PAZ", "LA PLATA", "LAGOS", "LEEDS"
 			});
 
 			var citySearch = new CitySearch(mockDataReadModel, new CityCharacterValidator(), new Trie());
@@ -29,26 +53,26 @@ namespace Autocomplete.Test
 
 			var expectedResult = new CityResult
 			{
-				NextCities = new[] { "Valid" },
-				NextLetters = new[] { "a" }
+				NextCities = new[] { "LA PAZ", "LA PLATA", "LAGOS" },
+				NextLetters = new[] { " ", "G" }
 			};
 
 			//When
-			var results = citySearch.Search("V");
+			var results = citySearch.Search("LA");
 
 			//Then
 			results.ShouldBeEquivalentTo(expectedResult);
 		}
 
 		[Test]
-		public async Task InvalidCasing_MatchesAreNotCaseSensitive_ReturnsMatches()
+		public async Task GivenZE_ResultsShouldMatchExpectations()
 		{
-			// Given
+			//Given
 			var mockDataReadModel = Substitute.For<IDataReadModel>();
 
 			mockDataReadModel.GetData().Returns(new List<string>
 			{
-				"London", "Londonderry"
+				"ZARIA", "ZHUGHAI", "ZIBO"
 			});
 
 			var citySearch = new CitySearch(mockDataReadModel, new CityCharacterValidator(), new Trie());
@@ -56,68 +80,14 @@ namespace Autocomplete.Test
 
 			var expectedResult = new CityResult
 			{
-				NextCities = new[] { "London", "Londonderry" },
-				NextLetters = new[] { "d" }
+				NextCities = new string[0],
+				NextLetters = new string[0]
 			};
 
-			// When
-			var results = citySearch.Search("lon");
+			//When
+			var results = citySearch.Search("ZE");
 
-			// Then
-			results.ShouldBeEquivalentTo(expectedResult);
-		}
-
-		[Test]
-		public async Task NextLetter_SpaceReturned_AsValidNextLetter()
-		{
-			// Given
-			var mockDataReadModel = Substitute.For<IDataReadModel>();
-
-			mockDataReadModel.GetData().Returns(new List<string>
-			{
-				"Los Angeles"
-			});
-
-			var citySearch = new CitySearch(mockDataReadModel, new CityCharacterValidator(), new Trie());
-			await citySearch.Initialise();
-
-			var expectedResult = new CityResult
-			{
-				NextCities = new[] { "Los Angeles" },
-				NextLetters = new[] { " " }
-			};
-
-			// When
-			var results = citySearch.Search("Los");
-
-			// Then
-			results.ShouldBeEquivalentTo(expectedResult);
-		}
-
-		[Test]
-		public async Task NextLetter_HyphenReturned_AsValidNextLetter()
-		{
-			// Given
-			var mockDataReadModel = Substitute.For<IDataReadModel>();
-
-			mockDataReadModel.GetData().Returns(new List<string>
-			{
-				"Stockton-on-Tees"
-			});
-
-			var citySearch = new CitySearch(mockDataReadModel, new CityCharacterValidator(), new Trie());
-			await citySearch.Initialise();
-
-			var expectedResult = new CityResult
-			{
-				NextCities = new[] { "Stockton-on-Tees" },
-				NextLetters = new[] { "-" }
-			};
-
-			// When
-			var results = citySearch.Search("Stockton");
-
-			// Then
+			//Then
 			results.ShouldBeEquivalentTo(expectedResult);
 		}
 	}
