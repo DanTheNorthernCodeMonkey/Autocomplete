@@ -117,7 +117,7 @@ namespace Autocomplete.Test
 			// When
 			var results = citySearch.Search("Stockton");
 
-			// Then
+			// Then 
 			results.ShouldBeEquivalentTo(expectedResult);
 		}
 	}
