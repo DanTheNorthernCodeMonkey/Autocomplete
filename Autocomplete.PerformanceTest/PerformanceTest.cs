@@ -11,7 +11,8 @@ using NUnit.Framework;
 
 namespace Autocomplete.PerformanceTest
 {
-	[TestFixture]
+	[TestFixture, Explicit]
+	[Category("Performance - Variable Input")]
 	public class PerformanceTest
 	{
 		private IEnumerable<string> _cities;
