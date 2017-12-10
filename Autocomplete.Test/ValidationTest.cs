@@ -66,5 +66,59 @@ namespace Autocomplete.Test
 			// Then
 			results.ShouldBeEquivalentTo(expectedResult);
 		}
+
+		[Test]
+		public async Task NextLetter_SpaceReturned_AsValidNextLetter()
+		{
+			// Given
+			var mockDataReadModel = Substitute.For<IDataReadModel>();
+
+			mockDataReadModel.GetData().Returns(new List<string>
+			{
+				"Los Angeles"
+			});
+
+			var citySearch = new CitySearch(mockDataReadModel, new CityCharacterValidator(), new Trie());
+			await citySearch.Initialise();
+
+			var expectedResult = new CityResult
+			{
+				NextCities = new[] { "Los Angeles" },
+				NextLetters = new[] { " " }
+			};
+
+			// When
+			var results = citySearch.Search("Los");
+
+			// Then
+			results.ShouldBeEquivalentTo(expectedResult);
+		}
+
+		[Test]
+		public async Task NextLetter_HyphenReturned_AsValidNextLetter()
+		{
+			// Given
+			var mockDataReadModel = Substitute.For<IDataReadModel>();
+
+			mockDataReadModel.GetData().Returns(new List<string>
+			{
+				"Stockton-on-Tees"
+			});
+
+			var citySearch = new CitySearch(mockDataReadModel, new CityCharacterValidator(), new Trie());
+			await citySearch.Initialise();
+
+			var expectedResult = new CityResult
+			{
+				NextCities = new[] { "Stockton-on-Tees" },
+				NextLetters = new[] { "-" }
+			};
+
+			// When
+			var results = citySearch.Search("Stockton");
+
+			// Then
+			results.ShouldBeEquivalentTo(expectedResult);
+		}
 	}
 }

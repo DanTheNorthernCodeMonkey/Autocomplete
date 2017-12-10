@@ -11,7 +11,7 @@ namespace Autocomplete.PerformanceTest
 			"Fayetteville","Forrest City", "Fort Smith", "Harrison", "Helena", "Hope", "Hot Springs", "Jacksonville", "Jonesboro", "Little Rock",
 			"Magnolia","Morrilton","Newport", "North Little Rock", "Osceola", "Pine Bluff", "Rogers", "Searcy", "Stuttgart", "Van Buren",
 			"West Memphis", "Newcastle-On-Tyne", "London", "New York", "Paris", "Prague", "Portsmouth", "Bangor", "Bath", "Belfast", "Birmingham",
-			"Brighton", "Bristol", "Newcastle-On-Tyne", "Newport"
+			"Brighton", "Bristol", "Newcastle Upon Tyne", "Newport"
 		};
 
 		public static char[] AllowedChars = 
